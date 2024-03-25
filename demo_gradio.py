@@ -14,6 +14,8 @@ def parse_args():
         "--rec_model_path", type=str, default='./deeperaser.pth',
         help="The path to necessary version of deeperaser.pth"
     )
+    user_args = parser.parse_args()
+    return user_args
     
 def reload_rec_model(model, path=""):
     if not bool(path):
