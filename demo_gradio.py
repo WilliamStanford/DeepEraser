@@ -5,7 +5,16 @@ from PIL import Image
 from model import DeepEraser
 import glob
 from gradio.components import Image as grImage
+import argparse
 
+def parse_args():
+    parser = argparse.ArgumentParser(description="setup gradio paths")
+
+    parser.add_argument(
+        "--rec_model_path", type=str, default='./deeperaser.pth',
+        help="The path to necessary version of deeperaser.pth"
+    )
+    
 def reload_rec_model(model, path=""):
     if not bool(path):
         return model
@@ -17,12 +26,6 @@ def reload_rec_model(model, path=""):
         model.load_state_dict(model_dict)
 
         return model
-
-
-rec_model_path = './deeperaser.pth'
-net = DeepEraser().cuda()
-reload_rec_model(net, rec_model_path)
-net.eval()
 
 
 def image_mod(images):
@@ -53,20 +56,27 @@ def image_mod(images):
         del im, mask, im_mask, pred_img
         torch.cuda.empty_cache()
 
+def main():
+    user_args = parse_args()
+    rec_model_path = user_args.rec_model_path
+    net = DeepEraser().cuda()
+    reload_rec_model(net, rec_model_path)
+    net.eval()
 
-demo_img_files = glob.glob('./demo_imgs/*.[jJ][pP][gG]') + glob.glob('./demo_imgs/*.[pP][nN][gG]')
+    demo_img_files = glob.glob('./demo_imgs/*.[jJ][pP][gG]') + glob.glob('./demo_imgs/*.[pP][nN][gG]')
 
-demo = gr.Interface(
-    image_mod,
-    # gr.inputs.Image(type="pil", tool='sketch', label="Image & Mask"),
-    # gr.outputs.Image(type="pil"),
-    grImage(type="pil", tool='sketch', label="Image & Mask"),
-    grImage(type="pil"),
-    title="DeepEraser", examples=demo_img_files, allow_flagging="never"
-)
-
+    demo = gr.Interface(
+        image_mod,
+        # gr.inputs.Image(type="pil", tool='sketch', label="Image & Mask"),
+        # gr.outputs.Image(type="pil"),
+        grImage(type="pil", tool='sketch', label="Image & Mask"),
+        grImage(type="pil"),
+        title="DeepEraser", examples=demo_img_files, allow_flagging="never"
+    )
+    
+    demo.launch(share=False, server_port=6212)
+    
 
 if __name__ == "__main__":
-    demo.launch(share=False, server_port=6212)
- 
+    main()
 
