@@ -60,7 +60,7 @@ def rec(rec_model_path, img_path, mask_path, save_path):
 
     img = np.array(Image.open(img_path))[:, :, :3]   
     print(img.shape)
-    mask = np.array(Image.open(mask_path))[:, :]
+    mask = np.array(Image.open(mask_path))[:, :, 0]
     print(mask.shape)
 
     im = torch.from_numpy(img / 255.0).permute(2, 0, 1).float()
