@@ -18,17 +18,17 @@ def parse_args():
         help="The path to necessary version of deeperaser.pth"
     )
     
-    parser.img_path(
+    parser.add_argument(
         "--img_path", type=str, default='./input_imgs/input.jpg',
         help="Path to image for text removal"
     )
 
-    parser.mask_path(
+    parser.add_argument(
         "--mask_path", type=str, default='./input_imgs/mask.jpg',
         help="Path to precomputed mask image used to specify text removal locations"
     )
 
-    parser.save_path(
+    parser.add_argument(
         "--save_path", type=str, default='./output_imgs/output.jpg',
         help="Path to save de-texted image"
     )
